@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"cs348/models"
 	"cs348/utils"
 	"net/http"
 
@@ -21,9 +20,9 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	var user models.User
-	err := utils.Conn.GetContext(c.Request.Context(), &user, "SELECT * FROM users WHERE user_name = $1", username)
-	if err != nil {
+	var exists bool
+	_ = utils.Conn.GetContext(c.Request.Context(), &exists, "SELECT EXISTS (SELECT 1 FROM users WHERE user_name = $1)", username)
+	if exists {
 		c.JSON(http.StatusBadRequest, utils.CreateErrorResponse("User already exists"))
 		return
 	}
@@ -40,5 +39,5 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	c.Status(http.StatusOK)
+	c.JSON(http.StatusOK, utils.CreateSuccessResponse(nil))
 }

@@ -16,7 +16,7 @@ func UseAuthentication(c *gin.Context) {
 	}
 
 	var user models.User
-	err = utils.Conn.GetContext(c.Request.Context(), &user, "SELECT id, user_name FROM sessions as s INNER JOIN users as u ON u.id = s.user_id WHERE s.token = $1", token)
+	err = utils.Conn.GetContext(c.Request.Context(), &user, "SELECT u.id, u.user_name FROM sessions as s INNER JOIN users as u ON u.id = s.user_id WHERE s.token = $1", token)
 	if err != nil {
 		c.Status(http.StatusUnauthorized)
 		return

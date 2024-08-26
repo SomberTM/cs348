@@ -1,12 +1,17 @@
 package controllers
 
 import (
+	"cs348/middleware"
 	"cs348/models"
 	"cs348/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
+)
+
+const (
+	UserDoesNotExist utils.ErrorCode = iota
 )
 
 func Login(c *gin.Context) {
@@ -24,7 +29,7 @@ func Login(c *gin.Context) {
 	var user models.User
 	err := utils.Conn.GetContext(c.Request.Context(), &user, "SELECT * FROM users WHERE user_name = $1", username)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, utils.CreateErrorResponse("Invalid username or password"))
+		c.JSON(http.StatusUnauthorized, utils.CreateErrorResponseWithCode("User does not exist", UserDoesNotExist))
 		return
 	}
 
@@ -67,6 +72,16 @@ func Logout(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie(utils.SessionCookieName, "", 0, "/", "", true, true)
+	c.SetCookie(utils.SessionCookieName, "", -1, "/", "", true, true)
 	c.Status(http.StatusOK)
+}
+
+func Me(c *gin.Context) {
+	user, ok := middleware.UseUser(c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, utils.CreateErrorResponse("You are not logged in"))
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.CreateSuccessResponse(user))
 }
