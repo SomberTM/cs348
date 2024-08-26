@@ -44,3 +44,7 @@ export async function login(username: string, password: string): Promise<void> {
     await login(username, password);
   } else throw Error(response.error);
 }
+
+export async function logout(): Promise<void> {
+  await apiClient.post("/auth/logout");
+}
