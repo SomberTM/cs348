@@ -28,7 +28,10 @@ export async function createUser(
   if (!response.success) throw Error(response.error);
 }
 
-export async function login(username: string, password: string): Promise<void> {
+export async function login(
+  username: string,
+  password: string
+): Promise<boolean> {
   const parameters = btoa(`${username}:${password}`);
   const result = await apiClient.post("/auth/login", undefined, {
     headers: {
@@ -37,11 +40,11 @@ export async function login(username: string, password: string): Promise<void> {
   });
   const response: ApiResponse = result.data;
 
-  if (response.success) return;
+  if (response.success) return true;
   // no user
   if (response.code === 0) {
     await createUser(username, password);
-    await login(username, password);
+    return await login(username, password);
   } else throw Error(response.error);
 }
 

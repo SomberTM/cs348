@@ -34,7 +34,14 @@ func main() {
 
 		calendars := authorized.Group("/calendars")
 		{
+			calendars.GET("/", controllers.ListCalendars)
 			calendars.POST("/", controllers.CreateCalendar)
+
+			calendar := calendars.Group("/:calendarId")
+			{
+				calendar.POST("/events", controllers.ListCalendarEvents)
+			}
+
 		}
 	}
 

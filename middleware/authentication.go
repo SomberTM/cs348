@@ -35,3 +35,19 @@ func UseUser(c *gin.Context) (*models.User, bool) {
 	user := rawUser.(models.User)
 	return &user, true
 }
+
+func UseRequireUser(c *gin.Context) (*models.User, bool) {
+	maybeUser := c.Value("user")
+	if maybeUser == nil {
+		c.Status(http.StatusUnauthorized)
+		return nil, true
+	}
+
+	switch u := maybeUser.(type) {
+	case models.User:
+		return &u, false
+	default:
+		c.Status(http.StatusUnauthorized)
+		return nil, true
+	}
+}

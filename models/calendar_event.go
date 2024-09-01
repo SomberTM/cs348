@@ -14,12 +14,12 @@ const (
 
 type CalendarEvent struct {
 	Id                string         `json:"id"`
-	UserId            string         `json:"user_id"`
-	CalendarId        string         `json:"calendar_id"`
+	UserId            string         `json:"user_id" db:"user_id"`
+	CalendarId        string         `json:"calendar_id" db:"calendar_id"`
 	Title             string         `json:"title"`
 	Description       sql.NullString `json:"description"`
-	StartDate         time.Time      `json:"start_date"`
-	EndDate           time.Time      `json:"end_data"`
-	Recurrence        sql.NullString `json:"recurrence"`
-	RecurrenceEndDate sql.NullTime   `json:"recurrence_end_date"`
+	StartDate         time.Time      `json:"start_date" db:"start_date"`
+	EndDate           time.Time      `json:"end_date" db:"end_date"`
+	Recurrence        sql.NullString `json:"recurrence" db:"recurrence"`
+	RecurrenceEndDate sql.NullTime   `json:"recurrence_end_date" db:"recurrence_end_date"`
 }
