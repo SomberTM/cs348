@@ -1,4 +1,11 @@
-import { createResource, Match, Show, Switch, type Component } from "solid-js";
+import {
+	createEffect,
+	createResource,
+	Match,
+	Show,
+	Switch,
+	type Component,
+} from "solid-js";
 import { getUser } from "./api/authentication";
 import { Login } from "./components/login";
 import { Logout } from "./components/logout";

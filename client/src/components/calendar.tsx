@@ -79,22 +79,34 @@ const CalendarDay: Component<ComponentProps<"div"> & CalendarDayProps> = ({
 }) => {
 	const [open, setOpen] = createSignal(false);
 
-	const key = format(date, "yyyy-MM-dd");
 	let dialogRef: HTMLDialogElement | undefined;
-	let contentRef: HTMLDivElement | undefined;
-	let state: Flip.FlipState;
+
+	function onOpen() {
+		dialogRef?.showModal();
+		gsap.to(dialogRef!, {
+			width: "50dvw",
+			height: "50dvh",
+			duration: 0.3,
+		});
+	}
+
+	function onClose() {
+		gsap.to(dialogRef!, {
+			width: 0,
+			height: 0,
+			duration: 0.3,
+		});
+		dialogRef?.close();
+	}
 
 	return (
 		<>
-			{/* {open() && <div class="w-full"></div>} */}
 			<div
 				{...props}
 				class={clsx(
-					"group relative flex flex-col gap-2 rounded-lg border border-zinc-200 bg-white p-2 transition-all duration-300",
-					open() && "z-10",
+					"group relative flex flex-col gap-2 overflow-y-hidden rounded-lg border border-zinc-200 bg-white p-2 transition-all duration-300",
 					props.class,
 				)}
-				ref={contentRef}
 			>
 				<span class="text-sm text-stone-800">{format(date, "dd")}</span>
 				<div>
@@ -102,33 +114,16 @@ const CalendarDay: Component<ComponentProps<"div"> & CalendarDayProps> = ({
 						<div>{event.title}</div>
 					))}
 				</div>
-				{/* <Show when={events()}>
-              {events()!
-                .filter((event) => isDateEqual(date, event.start_date))
-                .map((event) => (
-                  <div>{event.title}</div>
-                ))}
-            </Show> */}
 				<Button
 					class="absolute bottom-1 right-1 hidden aspect-square w-4 bg-white p-0 group-hover:grid"
-					onClick={(event) => {
-						console.log(contentRef);
-						if (!contentRef || !dialogRef) return;
-						if (!open()) {
-							state = Flip.getState(contentRef);
-							dialogRef.showModal();
-							Flip.fit(contentRef, dialogRef, {
-								duration: 0.3,
-								absolute: true,
-							});
+					onClick={() => {
+						const isOpen = !open();
+						setOpen(isOpen);
+						if (isOpen) {
+							onOpen();
 						} else {
-							dialogRef.close();
-							Flip.fit(contentRef, state, {
-								absolute: false,
-							});
+							onClose();
 						}
-
-						setOpen((prev) => !prev);
 					}}
 				>
 					<Expand
@@ -158,7 +153,11 @@ const CalendarDay: Component<ComponentProps<"div"> & CalendarDayProps> = ({
 						</form>
 						</dialog> */}
 			</div>
-			<dialog ref={dialogRef} class="h-[50dvh] w-[50dvw]"></dialog>
+			<dialog
+				ref={dialogRef}
+				onClose={() => onClose()}
+				class="rounded-lg border border-zinc-200 p-4 shadow-lg shadow-zinc-200"
+			></dialog>
 		</>
 	);
 };
@@ -216,7 +215,7 @@ export const Calendar: Component = () => {
 					</IconButton>
 				)}
 			</span>
-			<div class="relative grid h-full grid-cols-7 gap-1 rounded-lg shadow-zinc-200">
+			<div class="relative grid h-full auto-rows-fr grid-cols-7 gap-1 rounded-lg shadow-zinc-200">
 				<Show when={events()}>
 					{calendarRange.map((date) => (
 						<CalendarDay
