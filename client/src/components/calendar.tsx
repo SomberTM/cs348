@@ -37,7 +37,6 @@ import { IconButton } from "./ui/icon-button";
 import { Home } from "./icons/home";
 import { Expand } from "./icons/expand";
 import gsap from "gsap";
-import { Flip } from "gsap/all";
 
 function PlusIcon() {
 	return (
@@ -114,50 +113,51 @@ const CalendarDay: Component<ComponentProps<"div"> & CalendarDayProps> = ({
 						<div>{event.title}</div>
 					))}
 				</div>
-				<Button
-					class="absolute bottom-1 right-1 hidden aspect-square w-4 bg-white p-0 group-hover:grid"
-					onClick={() => {
-						const isOpen = !open();
-						setOpen(isOpen);
-						if (isOpen) {
+				<div class="absolute bottom-1 right-1 hidden gap-1 group-hover:flex">
+					<Button class="relative aspect-square w-4">
+						<ChevronRight
+							class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rotate-90"
+							width={16}
+							height={16}
+						/>
+					</Button>
+					<Button
+						class="relative aspect-square w-4"
+						onClick={() => {
+							setOpen(true);
 							onOpen();
-						} else {
-							onClose();
-						}
-					}}
-				>
-					<Expand
-						class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-						width={20}
-						height={20}
-					/>
-				</Button>
-				{/* <dialog
-					open={open()}
-					class="absolute right-0 top-0 z-10 m-0 ml-auto block w-0 translate-x-[calc(100%+0.5rem)] overflow-x-clip rounded-lg border p-2 opacity-0 shadow-lg shadow-zinc-300 transition-all duration-200 open:h-fit open:w-64 open:opacity-100"
-					ref={dialogRef}
-					>
-					<form
-					class="flex flex-col gap-2"
-					onSubmit={(event) => {
-						event.preventDefault();
 						}}
-						>
-						<Input required name="name" class="px-2 py-1 text-sm">
-						Name
-						</Input>
-						<Input>Description</Input>
-						<Input type="date">Start Date</Input>
-						<Input type="date">End Date</Input>
-						<Button type="submit">Create</Button>
-						</form>
-						</dialog> */}
+					>
+						<Expand
+							class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+							width={16}
+							height={16}
+						/>
+					</Button>
+				</div>
 			</div>
 			<dialog
 				ref={dialogRef}
 				onClose={() => onClose()}
 				class="rounded-lg border border-zinc-200 p-4 shadow-lg shadow-zinc-200"
-			></dialog>
+			>
+				<form
+					class="flex flex-col gap-2"
+					onSubmit={(event) => {
+						event.preventDefault();
+					}}
+				>
+					<Input required name="name" class="px-2 py-1 text-sm">
+						Name
+					</Input>
+					<Input>Description</Input>
+					<div class="flex items-center gap-2">
+						<Input type="date">Start Date</Input>
+						<Input type="date">End Date</Input>
+					</div>
+					<Button type="submit">Create</Button>
+				</form>
+			</dialog>
 		</>
 	);
 };
