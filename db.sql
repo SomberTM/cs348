@@ -43,7 +43,7 @@ create table if not exists calendar_events (
 	recurrence recurrence_period,
 	recurrence_end_date timestamp
 );
-create index ix_calendar_events_start_date on calendar_events using btree (start_date);
+create index ix_calendar_events_start_date on calendar_events using btree (user_id, start_date, end_date);
 
 DROP TABLE IF EXISTS shared_calendars;
 create table if not exists shared_calendars (
