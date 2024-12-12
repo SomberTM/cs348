@@ -1,3 +1,5 @@
+-- using postgresql
+
 drop table if exists users;
 create table if not exists users (
 	id uuid primary key default gen_random_uuid(),
@@ -22,7 +24,6 @@ create table if not exists calendars (
 drop index ix_calendars_user_id_name;
 create unique index ix_calendars_user_id_name on calendars (user_id, name);
 
-
 create type recurrence_period as enum (
 	'daily',
 	'weekly',
@@ -42,6 +43,7 @@ create table if not exists calendar_events (
 	recurrence recurrence_period,
 	recurrence_end_date timestamp
 );
+create index ix_calendar_events_start_date on calendar_events using btree (start_date);
 
 DROP TABLE IF EXISTS shared_calendars;
 create table if not exists shared_calendars (

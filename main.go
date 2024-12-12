@@ -39,7 +39,18 @@ func main() {
 
 			calendar := calendars.Group("/:calendarId")
 			{
-				calendar.POST("/events", controllers.ListCalendarEvents)
+				calendar.GET("/", controllers.GetCalendar)
+				calendar.PUT("/", controllers.UpdateCalendar)
+				calendar.DELETE("/", controllers.DeleteCalendar)
+
+				calendar.POST("/list-events", controllers.ListCalendarEvents)
+
+				events := calendar.Group("/events")
+				{
+					events.POST("/", controllers.CreateCalendarEvent)
+					events.PUT("/", controllers.UpdateCalendarEvent)
+					events.DELETE("/:eventId", controllers.DeleteCalendarEvent)
+				}
 			}
 
 		}

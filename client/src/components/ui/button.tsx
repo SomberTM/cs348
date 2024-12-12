@@ -1,24 +1,31 @@
 import clsx from "clsx";
-import { Component, ComponentProps, createSignal, JSX } from "solid-js";
+import { Component, ComponentProps, JSX } from "solid-js";
+import { cn } from "../../utils/cn";
+
+const colors = {
+	blue: "bg-sky-500 text-white hover:bg-sky-500/90 border-sky-600",
+} as const;
 
 interface ButtonProps {
-  tooltip?: JSX.Element;
+	tooltip?: JSX.Element;
+	color?: keyof typeof colors;
 }
 
-export const Button: Component<ComponentProps<"button"> & ButtonProps> = (
-  props
-) => {
-  return (
-    <>
-      <button
-        {...props}
-        class={clsx(
-          "px-4 py-1 font-semibold text-sm border rounded-lg shadow-lg shadow-zinc-100 hover:bg-stone-100 transition-colors duration-300 active:scale-[0.98]",
-          props.class
-        )}
-      >
-        {props.children}
-      </button>
-    </>
-  );
+export const Button: Component<
+	Omit<ComponentProps<"button">, "color"> & ButtonProps
+> = (props) => {
+	return (
+		<>
+			<button
+				{...props}
+				class={cn(
+					"rounded-lg border px-4 py-1 text-sm font-semibold shadow-lg shadow-zinc-100 transition-colors duration-300 hover:bg-stone-100 active:scale-[0.98]",
+					props.class,
+					!!props.color && colors[props.color],
+				)}
+			>
+				{props.children}
+			</button>
+		</>
+	);
 };
